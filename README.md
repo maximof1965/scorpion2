@@ -39,6 +39,14 @@ En local no hace falta levantar Node para el front: es estático. Las funciones 
 
 - Si alguien vio la **service key** o la **anon** en un chat, **rólalas** en Supabase (Settings → API) y actualiza Vercel + `.env`.
 
-## 5. Diferencia con el repo "producción"
+## 5. Impresora POS en Windows (driver instalado)
+
+Scorpion2 **no** habla con el driver por USB. El flujo es: al **INGRESO exitoso** se abre un **recibo en una ventana** y el navegador llama a **Imprimir**; Windows muestra el cuadro donde se elige la impresora (la que viste con el test “felicidades…”).
+
+- **Recomendado en esa caja de PC:** en Windows, **Configuración → Impresoras** y fijar la **POS 58** como **predeterminada** (o elegirla cada vez en el cuadro).
+- **Permitir ventanas emergentes** en Chrome/Edge para `scorpion2.vercel.app` (si el navegador bloquea, no sale el recibo).
+- Tras desplegar el último código, el recibo se dispara **solo** cuando el mensaje del backend incluye `INGRESADO CORRECTAMENTE`.
+
+## 6. Diferencia con el repo "producción"
 
 - Otro repositorio Git, otro proyecto Vercel y **otro** Supabase, para pruebas (p. ej. impresora / lector) sin tocar el entorno en uso en la tienda.
