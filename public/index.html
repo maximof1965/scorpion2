@@ -6792,18 +6792,42 @@
                 + String(ahora.getDate()).padStart(2, '0') + ' '
                 + String(ahora.getHours()).padStart(2, '0') + ':'
                 + String(ahora.getMinutes()).padStart(2, '0');
+            let fechaFmt = '';
+            if (fechaMax) {
+                try {
+                    const dmx = new Date(fechaMax);
+                    fechaFmt = isNaN(dmx.getTime()) ? String(fechaMax) : dmx.toLocaleString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                } catch (e) {
+                    fechaFmt = String(fechaMax);
+                }
+            }
+            const llevarTxt = (String(llevar).trim() || '—');
+            const descEsc = (desc && String(desc).trim()) ? String(desc) : 'NULO';
+            // Parte 1: cabecera + NOM, CC, VR, ART, LLEVAR, DESC; barras+num (JsBarcode); sin INGRESO, sin Corte, sin linea NUM extra
+            // Parte 2: copia; VR PR y VR RT con cada valor bajo su etiqueta (nada de ART/DESC/LLEVAR aqui)
             const h = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Recibo ' + _escRecibo(num) + '</title>'
                 + '<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>'
-                + '<style>@page{size:80mm auto;margin:2mm}body{font:12px/1.3 Consolas,monospace;margin:4px;max-width:80mm}.b{border-top:1px dashed #000;margin:10px 0;padding-top:8px}.h{font-weight:700;font-size:14px;text-align:center}.d{margin:2px 0}svg{max-width:100%;height:auto;display:block;margin:4px auto}</style></head><body>'
-                + '<div class="h">SCORPION2</div><div class="d">INGRESO &mdash; TURNO ' + _escRecibo(turno) + '</div><div class="d">' + _escRecibo(fStr) + '</div>'
-                + '<p class="d" style="text-align:center;font-size:10px">Corte: mitad superior / mitad inferior</p>'
-                + '<div class="d" style="text-align:center"><svg id="bc-ing-1"></svg></div><div class="d" style="text-align:center"><b>NUM</b> ' + _escRecibo(num) + '</div>'
+                + '<style>@page{size:80mm auto;margin:2mm}body{font:12px/1.3 Consolas,monospace;margin:4px;max-width:80mm}.b{border-top:1px dashed #000;margin:10px 0;padding-top:8px}.h{font-weight:700;font-size:14px;text-align:center}.d{margin:2px 0}svg{max-width:100%;height:auto;display:block;margin:4px auto}.rowvr{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin:4px 0}.rv{width:48%;min-width:7em}.rv b{display:block;font-size:10px}</style></head><body>'
+                + '<div class="h">SCORPION2</div>'
+                + (turno ? '<div class="d">TURNO ' + _escRecibo(turno) + '</div>' : '')
+                + '<div class="d">' + _escRecibo(fStr) + '</div>'
+                + '<div class="d"><b>NOM</b> ' + _escRecibo(nom) + '</div>'
+                + '<div class="d"><b>CC</b> ' + _escRecibo(cc) + '</div>'
+                + '<div class="d"><b>VR PR</b> ' + _escRecibo(String(vIng)) + '</div>'
+                + '<div class="d"><b>VR RT</b> ' + _escRecibo(String(vRet)) + '</div>'
+                + '<div class="d"><b>ART</b> ' + _escRecibo(art) + '</div>'
+                + '<div class="d"><b>LLEVAR</b> ' + _escRecibo(llevarTxt) + '</div>'
+                + '<div class="d"><b>DESC</b> ' + _escRecibo(descEsc) + '</div>'
+                + '<div class="d" style="text-align:center"><svg id="bc-ing-1"></svg></div>'
                 + '<div class="b"></div>'
                 + '<div class="d" style="text-align:center"><svg id="bc-ing-2"></svg></div>'
-                + '<div class="d"><b>NOM</b> ' + _escRecibo(nom) + '</div><div class="d"><b>VR PR / VR RT</b> ' + _escRecibo(vIng) + ' / ' + _escRecibo(vRet) + '</div>'
-                + (fechaMax ? '<div class="d"><b>FECHA MAX RETIRO</b> ' + _escRecibo(fechaMax) + '</div>' : '')
+                + '<div class="d"><b>NOM</b> ' + _escRecibo(nom) + '</div>'
+                + '<div class="rowvr">'
+                + '<div class="rv"><b>VR PR</b> ' + _escRecibo(String(vIng)) + '</div>'
+                + '<div class="rv"><b>VR RT</b> ' + _escRecibo(String(vRet)) + '</div>'
+                + '</div>'
+                + (fechaFmt ? '<div class="d"><b>FECHA MAX RETIRO</b> ' + _escRecibo(fechaFmt) + '</div>' : '')
                 + '<div class="d"><b>CC</b> ' + _escRecibo(cc) + '</div>'
-                + '<div class="d"><b>ART</b> ' + _escRecibo(art) + '</div><div class="d"><b>DESC</b> ' + _escRecibo(desc) + '</div><div class="d"><b>LLEVAR</b> ' + _escRecibo(llevar) + '</div>'
                 + '<script>(function(){var n=' + numJs + ';function go(){if(typeof JsBarcode!=="function"){setTimeout(go,30);return;}try{JsBarcode("#bc-ing-1",n,{format:"code128",width:1.1,height:44,displayValue:true,fontSize:10,margin:0});JsBarcode("#bc-ing-2",n,{format:"code128",width:1.1,height:44,displayValue:true,fontSize:10,margin:0});}catch(e){}}go();})();<\/script>'
                 + '</body></html>';
             const w = window.open('', 'recibo_ingreso', 'width=400,height=640,scrollbars=yes');
