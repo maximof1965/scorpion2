@@ -1,0 +1,6 @@
+node_modules/
+.env
+scripts/.env
+.vercel
+*.csv
+errores_importacion.csv
