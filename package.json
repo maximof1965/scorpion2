@@ -3,6 +3,10 @@
   "version": "2.0.0",
   "description": "SCORPION2 - copia de desarrollo (mismo codigo, Supabase distinto)",
   "private": true,
+  "scripts": {
+    "dev": "npx vercel dev",
+    "start": "npx vercel dev"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0"
   }

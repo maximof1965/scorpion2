@@ -4,3 +4,5 @@ scripts/.env
 .vercel
 *.csv
 errores_importacion.csv
+
+.vercel
